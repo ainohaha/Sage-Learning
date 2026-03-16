@@ -94,6 +94,8 @@ export default function ParticipantView() {
                 accumulatedText += data.content;
               } else if (data.type === 'thinking') {
                 accumulatedThinking += data.content;
+              } else if (data.type === 'error') {
+                accumulatedText += "\\n[System Error]: " + data.content;
               }
 
               // Update state for UI to re-render
