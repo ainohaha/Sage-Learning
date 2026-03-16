@@ -14,20 +14,33 @@ interface Message {
 const INITIAL_MESSAGE: Message = {
   role: 'assistant',
   content: "Hey, I'm Sage. I'm here to think through this with you, not to think for you. Tell me what you're trying to build and where you're at right now.",
-  timestamp: format(new Date(), 'HH:mm:ss'),
+  timestamp: '', // Will be set on client to avoid hydration mismatch
 };
 
 export default function ParticipantView() {
-  const [sessionId] = useState(() => 'S-' + Math.random().toString(36).substring(2, 8).toUpperCase());
-  const [startTime] = useState(() => new Date().toISOString());
+  const [sessionId, setSessionId] = useState('');
+  const [startTime, setStartTime] = useState('');
   const [messages, setMessages] = useState<Message[]>([INITIAL_MESSAGE]);
   const [inputValue, setInputValue] = useState('');
   const [isStreaming, setIsStreaming] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setSessionId('S-' + Math.random().toString(36).substring(2, 8).toUpperCase());
+    setStartTime(new Date().toISOString());
+    setMessages([{ ...INITIAL_MESSAGE, timestamp: format(new Date(), 'HH:mm:ss') }]);
+    setMounted(true);
+  }, []);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  // Prevent hydration mismatch by not rendering until mounted
+  if (!mounted) {
+    return null;
+  }
 
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
