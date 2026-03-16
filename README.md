@@ -1,36 +1,32 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Sage Learning
 
-## Getting Started
+A Next.js prototype web application for a UX study observing interactions with an AI mentor ("Sage"). 
 
-First, run the development server:
+This application was designed to test how students interact with an AI acting under strict Socratic constraints (asking guiding questions instead of providing direct answers) specifically within the context of learning p5.js.
+
+## What is this agent used for?
+
+The "Sage" agent is configured using the Anthropic Claude API (`claude-sonnet-4-6`) with `<thinking>` blocks enabled. Its explicit constraints are:
+1. **Never write code.** Not a single line, not even pseudocode.
+2. **Never directly confirm correctness.** 
+3. **Turn explanations into questions.**
+4. **Resist frustration.** Acknowledge frustration warmly, but return to questioning.
+5. **Always end with a question.**
+
+### Features
+- **Participant View (`/`)**: A clean, distraction-free interface where users chat with Sage. The model's `<thinking>` tokens are streamed in real-time but hidden from the user, giving the illusion of a human-like delay before the response.
+- **Admin View (`/admin`)**: A password-protected dashboard observing all completed and active sessions. The researcher can expand the "Claude Reasoning" dropdown under any message to read exactly how the model decided to formulate its Socratic response, and export all sessions as JSON.
+- **Session Export**: A permanent "End Session + Download" button lets users immediately download a text transcript of their conversation with exact timestamps for the researcher's records.
+
+## Setup
+
+1. Copy `.env.example` to `.env.local`
+2. Add your Anthropic API Key (`ANTHROPIC_API_KEY`)
+3. Set an admin password (`ADMIN_PASSWORD`)
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
-
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
-
-## Learn More
-
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+The application runs exclusively using server-side in-memory storage, meaning sessions are cleared if the server restarts. To capture data permanently, use the in-app export functions.
